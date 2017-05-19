@@ -12,7 +12,7 @@ import static java.lang.Math.*;
 public class Utils {
 
     public static double distance(Commune communeA, Commune communeB) {
-        return 60 * acos(sin(communeA.getLatitude()) * sin(communeB.getLatitude()) +
+        return 60 * 1.852 * acos(sin(communeA.getLatitude()) * sin(communeB.getLatitude()) +
                 cos(communeA.getLatitude()) * cos(communeB.getLatitude()) *
                         cos(communeB.getLongitude() - communeA.getLongitude()));
     }

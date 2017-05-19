@@ -3,7 +3,7 @@
  */
 public class Commune {
     private String id;
-    private String commune;
+    private String nom;
     private double longitude;
     private double latitude;
     private int population;
@@ -12,7 +12,7 @@ public class Commune {
         this.latitude = latitude;
         this.longitude = longitude;
         this.id = id;
-        this.commune = commune;
+        this.nom = commune;
         this.population = population;
     }
 
@@ -24,8 +24,8 @@ public class Commune {
         return id;
     }
 
-    public String getCommune() {
-        return commune;
+    public String getNom() {
+        return nom;
     }
 
     public double getLongitude() {

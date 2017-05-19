@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 import static java.lang.Math.*;
 
 /**
@@ -9,7 +11,8 @@ public class Utils {
         return 60*acos(sin(latitudeA)*sin(latitudeB)+cos(latitudeA)*cos(latitudeB)*cos(longitudeB-longitudeA));
     }
 
-    public static void readCSV(){
-        
+    public static ArrayList<Commune> readCSV(String filename){
+
+        return null;
     }
 }

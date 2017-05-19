@@ -23,7 +23,7 @@ public class Main {
             FileWriter fw = new FileWriter(new File("src/data/DistancesCommunes.txt"));
             BufferedWriter bw = new BufferedWriter(fw);
             for (Tuple t : graphe) {
-                bw.write(t.toString());
+                bw.write(t.toString()+"\n");
             }
             bw.close();
             fw.close();

@@ -1,8 +1,15 @@
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class Main {
 
     public static void main(String[] args) {
-        ArrayList<Commune> communes = Utils.readCSV("data/CommunesFrance.csv");
+        try {
+            ArrayList<Commune> communes = Utils.readCSV("data/CommunesFrance.csv");
+        }catch(IOException e){
+            e.printStackTrace();
+        }
+
+
     }
 }

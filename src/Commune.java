@@ -6,10 +6,18 @@ public class Commune {
     private String commune;
     private double longitude;
     private double latitude;
-
-    public Commune(double latitude, double longitude){
+    private int population;
+    
+    public Commune(String id, String commune, int population, double latitude, double longitude){
         this.latitude = latitude;
         this.longitude = longitude;
+        this.id = id;
+        this.commune = commune;
+        this.population = population;
+    }
+
+    public int getPopulation() {
+        return population;
     }
 
     public String getId() {

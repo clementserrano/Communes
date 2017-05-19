@@ -57,4 +57,17 @@ public class Utils {
         }
         return tmp;
     }
+
+    public static Commune getCommune(ArrayList<Commune> list, String cityId)
+    {
+        int i = 0;
+        while (i < list.size())
+        {
+            if(list.get(i).getId().equals(cityId))
+            {
+                return list.get(i);
+            }
+        }
+        return null;
+    }
 }

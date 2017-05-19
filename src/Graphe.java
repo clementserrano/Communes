@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 
 /**
- * Created by serra on 19/05/2017.
+ * Created by clementserrano on 19/05/2017.
  */
 public class Graphe extends ArrayList<Tuple> {
     @Override

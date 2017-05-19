@@ -1,4 +1,7 @@
-import java.io.*;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class Main {
@@ -7,18 +10,25 @@ public class Main {
         ArrayList<Commune> communes = null;
         try {
             communes = Utils.readCSV("src/data/CommunesFrance.csv");
-        }catch(IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
-        communes = Utils.filterPop(communes,20000);
+        communes = Utils.filterPop(communes, 20000);
         System.out.println(communes.size());
 
         Graphe graphe = Utils.buildGraphe(communes);
 
-        for(Tuple t : graphe){
-            System.out.println(t);
+        try {
+            FileWriter fw = new FileWriter(new File("src/data/DistancesCommunes.txt"));
+            BufferedWriter bw = new BufferedWriter(fw);
+            for (Tuple t : graphe) {
+                bw.write(t.toString());
+            }
+            bw.close();
+            fw.close();
+        }catch (IOException e){
+            e.printStackTrace();
         }
-
     }
 }

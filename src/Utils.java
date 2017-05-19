@@ -24,13 +24,17 @@ public class Utils {
         br.readLine();
         while ((line = br.readLine()) != null) {
             String[] temp = line.split(";");
-            communeList.add(new Commune(temp[0], temp[1], Integer.parseInt(temp[2]), Double.parseDouble(temp[3]), Double.parseDouble(temp[4])));
+            communeList.add(new Commune(temp[0], temp[1], Integer.parseInt(temp[2]),
+                    Double.parseDouble(temp[3].replace(",",".")),
+                    Double.parseDouble(temp[4].replace(",","."))));
         }
         return communeList;
     }
 
     public static double[][] buildGraphe(ArrayList<Commune> communes){
+        for(Commune c : communes){
 
+        }
         return null;
     }
 }

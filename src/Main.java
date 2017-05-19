@@ -5,7 +5,7 @@ public class Main {
 
     public static void main(String[] args) {
         try {
-            ArrayList<Commune> communes = Utils.readCSV("data/CommunesFrance.csv");
+            ArrayList<Commune> communes = Utils.readCSV("src/data/CommunesFrance.csv");
         }catch(IOException e){
             e.printStackTrace();
         }

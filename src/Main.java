@@ -1,6 +1,3 @@
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -14,21 +11,12 @@ public class Main {
             e.printStackTrace();
         }
 
-        communes = Utils.filterPop(communes, 20000);
+        communes = Utils.filterPop(communes, 50000);
         System.out.println(communes.size());
 
         Graphe graphe = Utils.buildGraphe(communes);
+        graphe = Utils.filterDist(graphe,100);
 
-        try {
-            FileWriter fw = new FileWriter(new File("src/data/DistancesCommunes.txt"));
-            BufferedWriter bw = new BufferedWriter(fw);
-            for (Tuple t : graphe) {
-                bw.write(t.toString()+"\n");
-            }
-            bw.close();
-            fw.close();
-        }catch (IOException e){
-            e.printStackTrace();
-        }
+        Utils.writeCSV(graphe);
     }
 }

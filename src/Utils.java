@@ -1,7 +1,4 @@
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 
 import static java.lang.Math.*;
@@ -11,10 +8,10 @@ import static java.lang.Math.*;
  */
 public class Utils {
 
-    public static double distance(Commune communeA, Commune communeB) {
-        return 60 * 1.852 * acos(sin(communeA.getLatitude()) * sin(communeB.getLatitude()) +
+    public static int distance(Commune communeA, Commune communeB) {
+        return (int) (60 * 1.852 * acos(sin(communeA.getLatitude()) * sin(communeB.getLatitude()) +
                 cos(communeA.getLatitude()) * cos(communeB.getLatitude()) *
-                        cos(communeB.getLongitude() - communeA.getLongitude()));
+                        cos(communeB.getLongitude() - communeA.getLongitude())));
     }
 
     public static ArrayList<Commune> readCSV(String filename) throws IOException {
@@ -37,7 +34,7 @@ public class Utils {
         Graphe graphe = new Graphe();
         for (int i = 0; i < communes.size(); i++) {
             for (int j = 0; j < communes.size(); j++) {
-                if(communes.get(i)!=communes.get(j)){
+                if (communes.get(i) != communes.get(j)) {
                     Tuple temp = new Tuple(communes.get(i), communes.get(j));
                     if (!graphe.contains(temp)) {
                         graphe.add(temp);
@@ -53,6 +50,31 @@ public class Utils {
         for (Commune c : communes) {
             if (c.getPopulation() > population) {
                 tmp.add(c);
+            }
+        }
+        return tmp;
+    }
+
+    public static void writeCSV(Graphe graphe) {
+        try {
+            FileWriter fw = new FileWriter(new File("src/data/DistancesCommunes.csv"));
+            BufferedWriter bw = new BufferedWriter(fw);
+            fw.write("Commune A;Commune B;Distance\n");
+            for (Tuple t : graphe) {
+                bw.write(t.toString() + "\n");
+            }
+            bw.close();
+            fw.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static Graphe filterDist(Graphe graphe, int distance) {
+        Graphe tmp = new Graphe();
+        for (Tuple t : graphe) {
+            if (t.getDistance() < distance) {
+                tmp.add(t);
             }
         }
         return tmp;

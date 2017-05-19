@@ -4,7 +4,7 @@
 public class Tuple {
     private Commune A;
     private Commune B;
-    private double distance;
+    private int distance;
 
     public Tuple(Commune A, Commune B) {
         this.A = A;
@@ -20,7 +20,7 @@ public class Tuple {
         return B;
     }
 
-    public double getDistance() {
+    public int getDistance() {
         return distance;
     }
 
@@ -33,6 +33,6 @@ public class Tuple {
 
     @Override
     public String toString() {
-        return A.getNom() + " - " + B.getNom() + " : " + distance;
+        return A.getNom() + ";" + B.getNom() + ";" + distance;
     }
 }

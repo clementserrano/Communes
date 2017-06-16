@@ -19,20 +19,20 @@ public class Main {
         U = Utils.filterDist(U, 100);
 
         // Utils.writeCSV(U);
-        
+
         Scanner reader = new Scanner(System.in);
 
         Commune depart;
         do {
             System.out.println("Entrer la ville de départ : ");
             depart = X.get(reader.next());
-        } while (depart != null);
+        } while (depart == null);
 
         Commune arrivee;
         do {
             System.out.println("Entrer la ville d'arrivée : ");
             arrivee = X.get(reader.next());
-        } while (arrivee != null);
+        } while (arrivee == null);
 
         Dijkstra.courtChemin(X, U, depart);
         Utils.getCourtChemin(depart, arrivee, Dijkstra.getLambda(), Dijkstra.getPere());

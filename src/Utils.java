@@ -16,9 +16,20 @@ public class Utils {
     private static int _cout;
 
     public static int distance(Commune communeA, Commune communeB) {
-        return (int) (60 * 1.852 * acos(sin(communeA.getLatitude()) * sin(communeB.getLatitude()) +
-                cos(communeA.getLatitude()) * cos(communeB.getLatitude()) *
-                        cos(communeB.getLongitude() - communeA.getLongitude())));
+        double a = Math.PI / 180;
+        double lat1 = communeA.getLatitude() * a;
+        double lat2 = communeB.getLatitude() * a;
+        double lon1 = communeA.getLongitude() * a;
+        double lon2 = communeB.getLongitude() * a;
+
+        double t1 = Math.sin(lat1) * Math.sin(lat2);
+        double t2 = Math.cos(lat1) * Math.cos(lat2);
+        double t3 = Math.cos(lon1 - lon2);
+        double t4 = t2 * t3;
+        double t5 = t1 + t4;
+        double rad_dist = Math.atan(-t5 / Math.sqrt(-t5 * t5 + 1)) + 2 * Math.atan(1);
+
+        return (int) ((rad_dist * 3437.74677 * 1.1508) * 1.6093470878864446);
     }
 
     public static X readCSV(String filename) throws IOException {
@@ -36,24 +47,24 @@ public class Utils {
         return X;
     }
 
-    public static U buildGraphe(ArrayList<Commune> communes) {
-        U graphe = new U();
-        for (int i = 0; i < communes.size(); i++) {
-            for (int j = 0; j < communes.size(); j++) {
-                if (communes.get(i) != communes.get(j)) {
-                    Arete temp = new Arete(communes.get(i), communes.get(j));
-                    if (!graphe.contains(temp)) {
-                        graphe.add(temp);
+    public static U buildGraphe(X X) {
+        U U = new U();
+        for (int i = 0; i < X.size(); i++) {
+            for (int j = 0; j < X.size(); j++) {
+                if (X.get(i) != X.get(j)) {
+                    Arete temp = new Arete(X.get(i), X.get(j));
+                    if (!U.contains(temp)) {
+                        U.add(temp);
                     }
                 }
             }
         }
-        return graphe;
+        return U;
     }
 
-    public static X filterPop(ArrayList<Commune> communes, int population) {
+    public static X filterPop(X X, int population) {
         X tmp = new X();
-        for (Commune c : communes) {
+        for (Commune c : X) {
             if (c.getPopulation() > population) {
                 tmp.add(c);
             }
@@ -61,24 +72,20 @@ public class Utils {
         return tmp;
     }
 
-    public static void writeCSV(U U) {
-        try {
-            FileWriter fw = new FileWriter(new File("src/data/DistancesCommunes.csv"));
-            BufferedWriter bw = new BufferedWriter(fw);
-            fw.write("Commune A;Commune B;Distance\n");
-            for (Arete u : U) {
-                bw.write(u.toString() + "\n");
+    public static X filterDOMTOM(X X) {
+        X tmp = new X();
+        Commune paris = X.get("paris");
+        for (Commune c : X) {
+            if (distance(paris,c) < 1200) { // On ne prend pas les DOMTOM
+                tmp.add(c);
             }
-            bw.close();
-            fw.close();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
+        return tmp;
     }
 
-    public static U filterDist(U graphe, int distance) {
+    public static U filterDist(U U, int distance) {
         U tmp = new U();
-        for (Arete u : graphe) {
+        for (Arete u : U) {
             if (u.getDistance() < distance) {
                 tmp.add(u);
             }
@@ -95,6 +102,7 @@ public class Utils {
             cout += lambda.get(iterator);
             iterator = pere.get(iterator);
         }
+        chemin.add(iterator);
         Collections.reverse(chemin);
 
         _chemin = chemin;
@@ -107,5 +115,20 @@ public class Utils {
 
     public static int getCout() {
         return _cout;
+    }
+
+    public static void writeCSV(U U) {
+        try {
+            FileWriter fw = new FileWriter(new File("src/data/DistancesCommunes.csv"));
+            BufferedWriter bw = new BufferedWriter(fw);
+            fw.write("Commune A;Commune B;Distance\n");
+            for (Arete u : U) {
+                bw.write(u.toString() + "\n");
+            }
+            bw.close();
+            fw.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

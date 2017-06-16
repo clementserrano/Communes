@@ -8,12 +8,12 @@ public class Commune {
     private double latitude;
     private int population;
 
-    public Commune(String id, String commune, int population, double latitude, double longitude) {
-        this.latitude = latitude;
-        this.longitude = longitude;
+    public Commune(String id, String nom, int population, double longitude, double latitude) {
         this.id = id;
-        this.nom = commune;
+        this.nom = nom;
         this.population = population;
+        this.longitude = longitude;
+        this.latitude = latitude;
     }
 
     public int getPopulation() {

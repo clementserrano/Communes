@@ -11,7 +11,7 @@ public class Dijkstra {
     private static HashMap<Commune, Commune> _pere;
 
     public static void courtChemin(X X, U U, Commune s) {
-        ArrayList<Commune> Z = new ArrayList<Commune>();
+        X Z = new X();
         HashMap<Commune, Integer> lambda = new HashMap<Commune, Integer>();
         HashMap<Commune, Commune> pere = new HashMap<Commune, Commune>();
 
@@ -32,23 +32,22 @@ public class Dijkstra {
         }
 
         while (!Z.isEmpty()) {
-            Map.Entry<Commune, Integer> entry = lambda.entrySet().iterator().next();
-            Commune x = entry.getKey();
-            int min = entry.getValue();
+            Commune x = null;
+            int min = Integer.MAX_VALUE;
             for (Map.Entry<Commune, Integer> e : lambda.entrySet()) {
-                if (e.getValue() < min) {
+                if (e.getValue() < min && Z.contains(e.getKey())) {
                     x = e.getKey();
                     min = e.getValue();
                 }
             }
             Z.remove(x);
-
             for (Commune i : U.getVoisins(x)) {
                 if (Z.contains(i)) {
                     Arete usi = new Arete(x, i);
                     int dist = lambda.get(x) + U.get(usi).getDistance();
                     if (dist < lambda.get(i)) {
                         lambda.put(i, dist);
+                        pere.put(i, x);
                     }
                 }
             }

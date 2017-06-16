@@ -1,22 +1,48 @@
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class Main {
 
     public static void main(String[] args) {
-        ArrayList<Commune> communes = null;
+        X X = null;
         try {
-            communes = Utils.readCSV("src/data/CommunesFrance.csv");
+            X = Utils.readCSV("src/data/CommunesFrance.csv");
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        communes = Utils.filterPop(communes, 50000);
-        System.out.println(communes.size());
+        X = Utils.filterPop(X, 50000);
+        System.out.println(X.size());
 
-        Graphe graphe = Utils.buildGraphe(communes);
-        graphe = Utils.filterDist(graphe,100);
+        U U = Utils.buildGraphe(X);
+        U = Utils.filterDist(U, 100);
 
-        Utils.writeCSV(graphe);
+        // Utils.writeCSV(U);
+        
+        Scanner reader = new Scanner(System.in);
+
+        Commune depart;
+        do {
+            System.out.println("Entrer la ville de départ : ");
+            depart = X.get(reader.next());
+        } while (depart != null);
+
+        Commune arrivee;
+        do {
+            System.out.println("Entrer la ville d'arrivée : ");
+            arrivee = X.get(reader.next());
+        } while (arrivee != null);
+
+        Dijkstra.courtChemin(X, U, depart);
+        Utils.getCourtChemin(depart, arrivee, Dijkstra.getLambda(), Dijkstra.getPere());
+
+        X chemin = Utils.getChemin();
+        int cout = Utils.getCout();
+
+        for (Commune c : chemin) {
+            System.out.print(c.getNom() + " -> ");
+        }
+        System.out.println("\nDistance : " + cout);
     }
 }

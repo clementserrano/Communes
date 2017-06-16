@@ -1,12 +1,13 @@
 /**
  * Created by clementserrano on 19/05/2017.
  */
-public class Tuple {
+public class Arete {
+
     private Commune A;
     private Commune B;
     private int distance;
 
-    public Tuple(Commune A, Commune B) {
+    public Arete(Commune A, Commune B) {
         this.A = A;
         this.B = B;
         this.distance = Utils.distance(A, B);
@@ -26,8 +27,8 @@ public class Tuple {
 
     @Override
     public boolean equals(Object obj) {
-        Tuple com = (Tuple) obj;
-        if ((A == com.getA() && B == com.getB()) || A == com.getB() && B == com.getA()) return true;
+        Arete u = (Arete) obj;
+        if ((A == u.getA() && B == u.getB()) || A == u.getB() && B == u.getA()) return true;
         return false;
     }
 

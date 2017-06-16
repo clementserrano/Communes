@@ -1,5 +1,9 @@
 import java.io.*;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import static java.lang.Math.*;
 
@@ -8,34 +12,36 @@ import static java.lang.Math.*;
  */
 public class Utils {
 
+    private static X _chemin;
+    private static int _cout;
+
     public static int distance(Commune communeA, Commune communeB) {
         return (int) (60 * 1.852 * acos(sin(communeA.getLatitude()) * sin(communeB.getLatitude()) +
                 cos(communeA.getLatitude()) * cos(communeB.getLatitude()) *
                         cos(communeB.getLongitude() - communeA.getLongitude())));
     }
 
-    public static ArrayList<Commune> readCSV(String filename) throws IOException {
-
-        ArrayList<Commune> communeList = new ArrayList<>();
+    public static X readCSV(String filename) throws IOException {
+        X X = new X();
         String line;
         FileReader fr = new FileReader(new File(filename));
         BufferedReader br = new BufferedReader(fr);
         br.readLine();
         while ((line = br.readLine()) != null) {
             String[] temp = line.split(";");
-            communeList.add(new Commune(temp[0], temp[1], Integer.parseInt(temp[2]),
+            X.add(new Commune(temp[0], temp[1], Integer.parseInt(temp[2]),
                     Double.parseDouble(temp[3].replace(",", ".")),
                     Double.parseDouble(temp[4].replace(",", "."))));
         }
-        return communeList;
+        return X;
     }
 
-    public static Graphe buildGraphe(ArrayList<Commune> communes) {
-        Graphe graphe = new Graphe();
+    public static U buildGraphe(ArrayList<Commune> communes) {
+        U graphe = new U();
         for (int i = 0; i < communes.size(); i++) {
             for (int j = 0; j < communes.size(); j++) {
                 if (communes.get(i) != communes.get(j)) {
-                    Tuple temp = new Tuple(communes.get(i), communes.get(j));
+                    Arete temp = new Arete(communes.get(i), communes.get(j));
                     if (!graphe.contains(temp)) {
                         graphe.add(temp);
                     }
@@ -45,8 +51,8 @@ public class Utils {
         return graphe;
     }
 
-    public static ArrayList<Commune> filterPop(ArrayList<Commune> communes, int population) {
-        ArrayList<Commune> tmp = new ArrayList<>();
+    public static X filterPop(ArrayList<Commune> communes, int population) {
+        X tmp = new X();
         for (Commune c : communes) {
             if (c.getPopulation() > population) {
                 tmp.add(c);
@@ -55,26 +61,13 @@ public class Utils {
         return tmp;
     }
 
-    public static Commune getCommune(ArrayList<Commune> list, String cityId)
-    {
-        int i = 0;
-        while (i < list.size())
-        {
-            if(list.get(i).getId().equals(cityId))
-            {
-                return list.get(i);
-            }
-        }
-        return null;
-    }
-
-    public static void writeCSV(Graphe graphe) {
+    public static void writeCSV(U U) {
         try {
             FileWriter fw = new FileWriter(new File("src/data/DistancesCommunes.csv"));
             BufferedWriter bw = new BufferedWriter(fw);
             fw.write("Commune A;Commune B;Distance\n");
-            for (Tuple t : graphe) {
-                bw.write(t.toString() + "\n");
+            for (Arete u : U) {
+                bw.write(u.toString() + "\n");
             }
             bw.close();
             fw.close();
@@ -83,13 +76,36 @@ public class Utils {
         }
     }
 
-    public static Graphe filterDist(Graphe graphe, int distance) {
-        Graphe tmp = new Graphe();
-        for (Tuple t : graphe) {
-            if (t.getDistance() < distance) {
-                tmp.add(t);
+    public static U filterDist(U graphe, int distance) {
+        U tmp = new U();
+        for (Arete u : graphe) {
+            if (u.getDistance() < distance) {
+                tmp.add(u);
             }
         }
         return tmp;
+    }
+
+    public static void getCourtChemin(Commune depart, Commune arrivee, HashMap<Commune, Integer> lambda, HashMap<Commune, Commune> pere) {
+        X chemin = new X();
+        int cout = 0;
+        Commune iterator = arrivee;
+        while (iterator != depart) {
+            chemin.add(iterator);
+            cout += lambda.get(iterator);
+            iterator = pere.get(iterator);
+        }
+        Collections.reverse(chemin);
+
+        _chemin = chemin;
+        _cout = cout;
+    }
+
+    public static X getChemin() {
+        return _chemin;
+    }
+
+    public static int getCout() {
+        return _cout;
     }
 }

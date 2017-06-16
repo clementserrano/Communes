@@ -7,8 +7,8 @@ public class Commune {
     private double longitude;
     private double latitude;
     private int population;
-    
-    public Commune(String id, String commune, int population, double latitude, double longitude){
+
+    public Commune(String id, String commune, int population, double latitude, double longitude) {
         this.latitude = latitude;
         this.longitude = longitude;
         this.id = id;

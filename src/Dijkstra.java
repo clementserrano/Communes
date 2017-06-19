@@ -42,7 +42,7 @@ public class Dijkstra {
         // Pour tous les sommets non validés
         for (Commune i : Z) {
             // On construit une arête temporaire pour la retrouver dans U
-            Arete usi = new Arete(s, i);
+            Arete usi = new Arete(s, i, false);
             if (U.contains(usi)) { // Pour tous les voisins de s
                 // On ajoute la valeur de l'arête à la commune et la commune à la skiplist
                 i.setDistance(U.get(usi).getDistance());
@@ -70,7 +70,7 @@ public class Dijkstra {
                 // S'il n'est pas validé
                 if (Z.contains(i)) {
                     // On met à jour sa distance si la distance par rapport à x est plus petite
-                    Arete usi = new Arete(x, i);
+                    Arete usi = new Arete(x, i, false);
                     int dist = x.getDistance() + U.get(usi).getDistance();
                     if (dist < i.getDistance()) {
                         i.setDistance(dist);
@@ -102,7 +102,7 @@ public class Dijkstra {
         // Pour tous les sommets non validés
         for (Commune i : Z) {
             // On construit une arête temporaire pour la retrouver dans U
-            Arete usi = new Arete(s, i);
+            Arete usi = new Arete(s, i, false);
             if (U.contains(usi)) { // Pour tous les voisins de s
                 lambda.put(i, U.get(usi).getDistance());
                 pere.put(i, s);
@@ -130,7 +130,7 @@ public class Dijkstra {
                 // S'il n'est pas validé
                 if (Z.contains(i)) {
                     // On met à jour sa distance si la distance par rapport à x est plus petite
-                    Arete usi = new Arete(x, i);
+                    Arete usi = new Arete(x, i, false);
                     int dist = lambda.get(x) + U.get(usi).getDistance();
                     if (dist < lambda.get(i)) {
                         lambda.put(i, dist);

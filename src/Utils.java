@@ -104,7 +104,7 @@ public class Utils {
         Commune iteratorPrec = null;
         while (iterator != depart) {
             chemin.add(iterator);
-            if (iteratorPrec != null) cout += U.get(new Arete(iteratorPrec, iterator)).getDistance();
+            if (iteratorPrec != null) cout += U.get(new Arete(iteratorPrec, iterator, false)).getDistance();
             iteratorPrec = iterator;
             iterator = pere.get(iterator);
         }

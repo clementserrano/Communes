@@ -18,8 +18,8 @@ public class Astar {
 
     ArrayList<Commune> _chemin;
     public static void courtChemin(X X, U U, Commune depart, Commune arrivee) {
-        ArrayList<Commune> openQueue = new ArrayList<>();
-        ArrayList<Commune> closeQueue = new ArrayList<>();
+        ArrayList<CommPonder> openQueue = new ArrayList<>();
+        ArrayList<CommPonder> closeQueue = new ArrayList<>();
 
         ArrayList<CommPonder> x = new ArrayList<>(X.size());
         Commune c;
@@ -32,29 +32,32 @@ public class Astar {
         }
 
         //on enfile la commune de départ
-        openQueue.add(depart);
+        openQueue.add(getCommPonder(x,depart));
 
         while (!openQueue.isEmpty())
         {
-            Commune com = openQueue.get(0);
-            if(com == arrivee)
+            CommPonder com = openQueue.get(0);
+            if(com.get_commune() == arrivee)
             {
-                //fin du programme je sais pas comment gerer
+                //fin du programme je sais pas comment gerer mais refait le chemin
+
             }
 
 
-            ArrayList<Commune> voisins = U.getVoisins(com);
+            ArrayList<Commune> voisins = U.getVoisins(com.get_commune());
             for (int i =0; i < voisins.size(); i++)
             {
                 Commune v = voisins.get(i);
                 CommPonder voisin = getCommPonder(x,v);
-                if (!openQueue.contains(voisin) /* && !( voisin._cout < voisin._cout de openQueue )) ou (( v existe dans openList && avec un cout inférieur )*/)
+                CommPonder voisinOpenQueue = openQueue.get(openQueue.indexOf(voisin));
+                if (( !contient(openQueue,voisin.get_commune())  && !( voisin.get_cout() < voisinOpenQueue.get_cout()) )
+                        || (( contient(openQueue,voisin.get_commune()) /*&& avec un cout inférieur*/ )))
                 {
-                    /*
-                    v.cout = u.cout +1
-                    v.heuristique = v.cout + distance([v.x, v.y], [objectif.x, objectif.y])
-                    */
-                    openQueue.add((Commune) v);
+
+                    voisin.set_cout(com.get_cout() + 1);
+                    voisin.set_heuristique( voisin.get_cout() + Utils.distance(com.get_commune(), arrivee));
+
+                    openQueue.add(voisin);
                 }
 
             }

@@ -56,7 +56,7 @@ public class Main {
             }
         }
 
-        System.out.println("\nDistance : " + cout);
+        System.out.println("\nDistance : " + cout + " km");
 
         Astar astar = new Astar();
         System.out.println("Ville départ = " + depart.getNom() + " Ville arrivée = " + arrivee.getNom());

@@ -1,5 +1,7 @@
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.NavigableSet;
 import java.util.concurrent.ConcurrentSkipListSet;
 
 /**
@@ -22,11 +24,9 @@ public class Dijkstra {
 
         // SkipList, pour des soucis techniques on stock les distances par rapport au départ dans les communes
         ConcurrentSkipListSet<Commune> skiplist = new ConcurrentSkipListSet<>((o1, o2) -> {
-            if (o1.getDistance() > o2.getDistance()) {
-                return 1;
-            } else {
-                return -1;
-            }
+            if (o1.getId().equals(o2.getId())) return 0;
+            if (o1.getDistance() > o2.getDistance()) return 1;
+            else return -1;
         });
 
         // On ajoute toutes les communes dans Z sauf le départ
@@ -36,7 +36,6 @@ public class Dijkstra {
 
         // On ajoute s dans la skiplist et on le valide en le mettant dans lambda
         s.setDistance(0);
-        skiplist.add(s);
         lambda.put(s, 0);
 
         // Pour tous les sommets non validés
@@ -73,6 +72,7 @@ public class Dijkstra {
                     Arete usi = new Arete(x, i, false);
                     int dist = x.getDistance() + U.get(usi).getDistance();
                     if (dist < i.getDistance()) {
+                        skiplist.remove(i);
                         i.setDistance(dist);
                         skiplist.add(i);
                         pere.put(i, x);

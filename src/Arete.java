@@ -16,6 +16,7 @@ public class Arete {
     public Arete(Commune A, Commune B, boolean noCalc) {
         this.A = A;
         this.B = B;
+        this.distance = 0;
     }
 
     public Commune getA() {

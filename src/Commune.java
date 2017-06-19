@@ -45,4 +45,11 @@ public class Commune {
     public void setDistance(int distance) {
         this.distance = distance;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        Commune o = (Commune)obj;
+        if (this.getId().equals(o.getId())) return true;
+        return false;
+    }
 }

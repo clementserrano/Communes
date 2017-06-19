@@ -16,13 +16,13 @@ public class Astar {
 
      */
 
-    ArrayList<Commune> _chemin;
+    private static X _chemin;
     public static void courtChemin(X X, U U, Commune depart, Commune arrivee) {
-        ArrayList<Commune> openQueue = new ArrayList<>();
-        ArrayList<Commune> closeQueue = new ArrayList<>();
+        ArrayList<CommPonder> openQueue = new ArrayList<>();
+        ArrayList<CommPonder> closeQueue = new ArrayList<>();
 
         ArrayList<CommPonder> x = new ArrayList<>(X.size());
-        Commune c;
+        boolean destTrouve = false;
 
         //Initialisation du tableau avec les communes, l'heuristique et le cout
         for (int i = 0;i < x.size(); i++)
@@ -32,44 +32,59 @@ public class Astar {
         }
 
         //on enfile la commune de départ
-        openQueue.add(depart);
+        openQueue.add(getCommPonder(x,depart));
 
-        while (!openQueue.isEmpty())
+        while (!openQueue.isEmpty() && !destTrouve)
         {
-            Commune com = openQueue.get(0);
-            if(com == arrivee)
+            CommPonder com = openQueue.get(0);
+            if(com.get_commune() == arrivee)
             {
-                //fin du programme je sais pas comment gerer
+                //fin du programme je sais pas comment gerer mais refait le chemin
+                destTrouve= true;
+                _chemin.add(com.get_commune());
             }
-
-
-            ArrayList<Commune> voisins = U.getVoisins(com);
-            for (int i =0; i < voisins.size(); i++)
+            else
             {
-                Commune v = voisins.get(i);
-                CommPonder voisin = getCommPonder(x,v);
-                if (!openQueue.contains(voisin) /* && !( voisin._cout < voisin._cout de openQueue )) ou (( v existe dans openList && avec un cout inférieur )*/)
-                {
-                    /*
-                    v.cout = u.cout +1
-                    v.heuristique = v.cout + distance([v.x, v.y], [objectif.x, objectif.y])
-                    */
-                    openQueue.add((Commune) v);
+                ArrayList<Commune> voisins = U.getVoisins(com.get_commune());
+                for (int i = 0; i < voisins.size(); i++) {
+                    Commune v = voisins.get(i);
+                    CommPonder voisin = getCommPonder(x, v);
+                    CommPonder voisinOpenQueue = openQueue.get(openQueue.indexOf(voisin));
+                    if ((!contient(closeQueue, voisin.get_commune()))
+                            ||
+                            (!contient(openQueue, voisin.get_commune()) && (voisin.get_cout() > voisinOpenQueue.get_cout()))
+                            ) {
+
+                        voisin.set_cout(com.get_cout() + Utils.distance(com.get_commune(), voisin.get_commune()));
+                        voisin.set_heuristique(voisin.get_cout() + Utils.distance(com.get_commune(), arrivee));
+
+                        ajoute(voisin,openQueue);
+                        changeChemin(com.get_commune(),voisin.get_commune());
+                    }
+
                 }
 
+                closeQueue.add(com);
+                openQueue.remove(0);
             }
 
-            closeQueue.add(com);
         }
-        //terminer le programme (avec erreur)
 
 
     }
 
-    public static double  heuristique(Commune a, Commune b,U U)
-    {
-        Arete arete = new Arete(a,b);
-        return U.get(arete).getDistance()/100;
+    private static void ajoute(CommPonder voisin, ArrayList<CommPonder> list) {
+        int i = 0;
+        boolean placer = false;
+        while (i < list.size() && !placer)
+        {
+            if (list.get(i).get_heuristique() < voisin.get_heuristique())
+            {
+                list.add(i,voisin);
+                placer = true;
+            }
+            i++;
+        }
     }
 
 
@@ -104,4 +119,31 @@ public class Astar {
 
     }
 
+    public static void changeChemin(Commune communeActuelle, Commune voisinActuel)
+    {
+        boolean comActTrouve = false;
+        for (int i = 0; i < _chemin.size(); i++)
+        {
+            if (comActTrouve)
+            {
+                _chemin.remove(i);
+            }
+            if (communeActuelle == _chemin.get(i))
+            {
+                comActTrouve = true;
+                _chemin.remove(i+1);
+                _chemin.add(i+1,voisinActuel);
+            }
+
+        }
+
+    }
+
+
+
+
+    public static X getChemin()
+    {
+        return _chemin;
+    }
 }

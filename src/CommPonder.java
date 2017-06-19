@@ -7,12 +7,14 @@ public class CommPonder {
     private Commune _commune;
     private double _heuristique;
     private int _cout;
+    private CommPonder _pere;
 
     public CommPonder(Commune commune)
     {
         _commune = commune;
         _heuristique = 0;
         _cout = 0;
+        _pere= null;
     }
 
     public Commune get_commune() {
@@ -38,4 +40,21 @@ public class CommPonder {
     public void set_cout(int _cout) {
         this._cout = _cout;
     }
+
+    public CommPonder get_pere() {
+        return _pere;
+    }
+
+    public void set_pere(CommPonder _pere) {
+        this._pere = _pere;
+    }
+
+    public void affiche()
+    {
+        System.out.println("\n\nNom " + this._commune.getNom());
+        if (_pere != null)
+            System.out.println("NomPere " + this._pere.get_commune().getNom());
+        System.out.println("heuristique " + this._heuristique + "\n");
+    }
+
 }

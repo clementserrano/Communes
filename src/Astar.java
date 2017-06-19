@@ -7,20 +7,10 @@ import java.util.concurrent.ArrayBlockingQueue;
 public class Astar {
 
 
-    /*URL
-
-    https://fr.wikipedia.org/wiki/Algorithme_A*
-    http://web.emn.fr/x-info/pdavid/Enseignement/IA/poly-ia/resolution/a-etoile.html
-    http://khayyam.developpez.com/articles/algo/astar/
-    http://www.redblobgames.com/pathfinding/a-star/introduction.html
-
-     */
-
     private static X _chemin;
     public static void courtChemin(X X, U U, Commune depart, Commune arrivee) {
         ArrayList<CommPonder> openQueue = new ArrayList<>();
         ArrayList<CommPonder> closeQueue = new ArrayList<>();
-        X chemin = new X();
         ArrayList<CommPonder> x = new ArrayList<>(X.size());
         boolean destTrouve = false;
 
@@ -29,91 +19,66 @@ public class Astar {
         {
             CommPonder commPonder = new CommPonder(X.get(i));
             x.add(commPonder);
-            System.out.println("CommPonder : Ville= "+ commPonder.get_commune().getNom());
         }
 
-        //on enfile la commune de départ
+        //on initialise les attribut de la commPonder du "depart"
         CommPonder commPonderDepart=getCommPonder(x,depart);
         commPonderDepart.set_cout(0);
-        commPonderDepart.set_heuristique(commPonderDepart.get_cout() + Utils.distance(commPonderDepart.get_commune(), arrivee));
+        commPonderDepart.set_heuristique(Utils.distance(commPonderDepart.get_commune(), arrivee)); // heuristique = distance entre commune actuelle et commune arrivee à vol d'opiseau
+
+        //on enfile la commune de départ
         openQueue.add(commPonderDepart);
-        //System.out.println("openQueue contient :" + openQueue.get(0).get_commune().getNom());
+
+        //tant que la liste ouverte( liste des commets a parcourir n'est pas vide et qu'on a pas trouve la destination
         while (!openQueue.isEmpty() && !destTrouve)
         {
-            System.out.println("début du while");
+            //on depile
             CommPonder com = openQueue.get(0);
-            if(com.get_commune() == arrivee)
-            {
-                System.out.println("On a trouvé la ville: " + arrivee.getNom());
-                System.out.println("Son père est " + com.get_pere().get_commune().getNom());
-                _chemin = retrouveChemin(com);
-                //fin du programme je sais pas comment gerer mais refait le chemin
-                destTrouve= true;
-                //_chemin.add(com.get_commune());
-            }
-            else
-            {
-                System.out.println("Ville pas encore trouvée...");
-                ArrayList<Commune> voisins = U.getVoisins(com.get_commune());
-                for (int i = 0; i < voisins.size(); i++)
-                {
-                    System.out.println(i+1 + " -voisin de " + com.get_commune().getNom() + " : " + voisins.get(i).getNom());
 
+            //si on arrive a destination
+            if (com.get_commune() == arrivee)
+            {
+                _chemin = retrouveChemin(com);
+                destTrouve = true;
+            }
+            else //sinon
+            {
+                //on recupere tout les voisins de la commune prise dans la liste ouverte
+                ArrayList<Commune> voisins = U.getVoisins(com.get_commune());
+
+                // parcours des voisins un a un
+                for (int i = 0; i < voisins.size(); i++) {
+
+                    //creation et initialisation du voisin pondere
                     Commune v = voisins.get(i);
                     CommPonder voisin = getCommPonder(x, v);
 
                     voisin.set_cout(com.get_cout() + Utils.distance(com.get_commune(), voisin.get_commune()));
-                    voisin.set_heuristique(voisin.get_cout() + Utils.distance(com.get_commune(), arrivee));
+                    voisin.set_heuristique(voisin.get_cout() + Utils.distance(voisin.get_commune(), arrivee));
                     voisin.set_pere(com);
 
-                    if (!contient("closeQueue",closeQueue, voisin.get_commune())) {
+                    //si la ville n'a jamais ete archive dans la liste fermee
+                    if (!contient(closeQueue, voisin.get_commune()))
+                    {
+                        // si le voisin a deja ete ajoute a la liste par un autre pere et que son cout est superieur a notre chaine actuelle
+                        if (contient(openQueue, voisin.get_commune())
+                                && (voisin.get_cout() < openQueue.get(indexOfCommune(openQueue, voisin.get_commune())).get_cout())) {
 
+                            //on modifie la communeponderee dans la file ouverte
+                            openQueue.set(indexOfCommune(openQueue, voisin.get_commune()), voisin);
 
-                        //System.out.println("rentre dans le if1");
-                        if (contient("openQueue", openQueue, voisin.get_commune()) && !(voisin.get_cout() > openQueue.get(indexOfCommune(openQueue, voisin.get_commune())).get_cout())) {
-
-                            //System.out.println("rentre dans le if2");
-
-                            com.affiche();
-                            voisin.affiche();
-                            openQueue.set(indexOfCommune(openQueue, voisin.get_commune()),voisin);
-
-                            //System.out.println("Commune de " + com.get_commune().getNom());
-                            //System.out.println("Voisin " + voisin.get_commune().getNom() + "heuristique = " + voisin.get_heuristique() + "cout = " + voisin.get_cout());
-                            //chemin.add(voisin.get_commune());
-                            //changeChemin(chemin, com.get_commune(), voisin.get_commune());
-                            //System.out.println("on est sorti de changeChemin");
                         }
-                        else
+                        else // si elle n'a jamais ete regardee
                         {
-                            System.out.println("rentre dans le if22");
-
-                            com.affiche();
-                            voisin.affiche();
-                            //System.out.println("On ajout voisin à openQueue");
                             ajoute(voisin, openQueue);
                         }
                     }
-                    else
-                    {
-                        //System.out.println("closeQueue et openQueue ne contiennent pas cette ville");
-                    }
-                    //afficheQueue("OpenQueue",openQueue);
-                    //afficheQueue("CloseQueue",closeQueue);
                 }
-                System.out.println("fin des voisins");
-
                 closeQueue.add(com);
-                //System.out.println("la vile en haut de open queue est : " + openQueue.get(0).get_commune().getNom());
-                openQueue.remove(indexOfCommune(openQueue,com.get_commune()));
-                //System.out.println("la vile en haut de open queue est : " + openQueue.get(0).get_commune().getNom());
 
+                openQueue.remove(indexOfCommune(openQueue, com.get_commune()));
             }
-            //afficheQueue("openqueue",openQueue);
-            System.out.println("fin du tant que");
         }
-
-
     }
 
     private static int indexOfCommune(ArrayList<CommPonder> list, Commune commune)
@@ -136,28 +101,25 @@ public class Astar {
     private static void ajoute(CommPonder voisin, ArrayList<CommPonder> list) {
         int i = 0;
         boolean placer = false;
-        System.out.println("On rentre dans ajoute ");
-        voisin.affiche();
+
         while (i < list.size() && !placer)
         {
-            System.out.println("i : " + i + "\n"
-            + " heuristique de "+list.get(i).get_commune().getNom() +"   dans liste: "+ + list.get(i).get_heuristique() +"\n"
-            + " heuristique de "+voisin.get_commune().getNom() +"    du voisin: " +voisin.get_heuristique());
+
+
             if (list.get(i).get_heuristique() >= voisin.get_heuristique())
             {
-                //System.out.println("Ajouté à la " + i +"ème place");
-
                 placer = true;
             }
             i++;
         }
+
         list.add(i,voisin);
     }
 
 
-    public static boolean contient(String titreList, ArrayList<CommPonder> list,Commune commune)
+    public static boolean contient(ArrayList<CommPonder> list,Commune commune)
     {
-        //System.out.println("On verifie si la liste contient: " + commune.getNom());
+
         int i = 0;
         boolean trouve = false;
         while ( i < list.size() && !trouve )
@@ -170,15 +132,6 @@ public class Astar {
 
             i ++;
         }
-
-
-        if (trouve == true)
-            System.out.println("La liste " + titreList + " contient" + commune.getNom());
-        else
-            System.out.println("La liste " + titreList + " ne contient pas " + commune.getNom());
-
-
-
         return trouve;
     }
 
@@ -200,31 +153,28 @@ public class Astar {
 
     public static X retrouveChemin(CommPonder commune)
     {
-        System.out.println("\nOn retrouve chemin");
         X chemin = new X();
-        while (commune.get_pere() != null)
+        CommPonder tmp = commune;
+        chemin.add(commune.get_commune());
+
+        while (!(tmp.get_pere()== null))
         {
-            System.out.println(commune.get_commune().getNom());
-            chemin.add(commune.get_commune());
-            System.out.println("commune " + commune.get_commune().getNom() + "pere:" + commune.get_pere().get_commune().getNom());
-            commune = commune.get_pere();
+            chemin.add(tmp.get_commune());
+            tmp.affiche();
+            tmp = tmp.get_pere();
+
         }
         return chemin;
-        //System.out.println(" on a ajouté " + voisinActuel.getNom() + "à _chemin");
+
     }
 
 
     public static void afficheQueue(String titre ,ArrayList<CommPonder> list)
     {
-        System.out.println("l'arraylist " + titre + " contient :");
         for (int i = 0; i < list.size(); i++)
         {
             list.get(i).affiche();
         }
-    }
-    public static CommPonder trouvePere(ArrayList<CommPonder> list, Commune)
-    {
-
     }
 
     public static X getChemin()

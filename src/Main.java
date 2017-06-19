@@ -67,5 +67,6 @@ public class Main {
         {
             System.out.println(cheminAStar.get(i).getNom());
         }
+
     }
 }

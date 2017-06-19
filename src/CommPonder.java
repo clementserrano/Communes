@@ -54,7 +54,8 @@ public class CommPonder {
         System.out.println("\n\nNom " + this._commune.getNom());
         if (_pere != null)
             System.out.println("NomPere " + this._pere.get_commune().getNom());
-        System.out.println("heuristique " + this._heuristique + "\n");
+        System.out.println("Heuristique " + this._heuristique);
+        System.out.println("Cout " + this._cout + "\n");
     }
 
 }

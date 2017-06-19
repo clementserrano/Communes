@@ -58,7 +58,7 @@ public class Main {
 
         System.out.println("\nDistance : " + cout);
 
-        /*Astar astar = new Astar();
+        Astar astar = new Astar();
         System.out.println("Ville départ = " + depart.getNom() + " Ville arrivée = " + arrivee.getNom());
         astar.courtChemin(X,U,depart,arrivee);
 
@@ -66,6 +66,6 @@ public class Main {
         for (int i = 0;i < cheminAStar.size(); i++)
         {
             System.out.println(cheminAStar.get(i).getNom());
-        }*/
+        }
     }
 }

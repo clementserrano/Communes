@@ -74,7 +74,7 @@ public class Astar {
 
                             //System.out.println("rentre dans le if2");
 
-
+                            com.affiche();
                             voisin.affiche();
                             openQueue.set(indexOfCommune(openQueue, voisin.get_commune()),voisin);
 
@@ -86,9 +86,9 @@ public class Astar {
                         }
                         else
                         {
-                            //System.out.println("rentre dans le if2");
+                            System.out.println("rentre dans le if22");
 
-
+                            com.affiche();
                             voisin.affiche();
                             //System.out.println("On ajout voisin à openQueue");
                             ajoute(voisin, openQueue);
@@ -109,7 +109,7 @@ public class Astar {
                 //System.out.println("la vile en haut de open queue est : " + openQueue.get(0).get_commune().getNom());
 
             }
-            //afficheQueue(openQueue);
+            //afficheQueue("openqueue",openQueue);
             System.out.println("fin du tant que");
         }
 
@@ -136,18 +136,22 @@ public class Astar {
     private static void ajoute(CommPonder voisin, ArrayList<CommPonder> list) {
         int i = 0;
         boolean placer = false;
-        //System.out.println("On rentre dans ajoute ");
+        System.out.println("On rentre dans ajoute ");
+        voisin.affiche();
         while (i < list.size() && !placer)
         {
-            //System.out.println("i : " + i);
+            System.out.println("i : " + i + "\n"
+            + " heuristique de "+list.get(i).get_commune().getNom() +"   dans liste: "+ + list.get(i).get_heuristique() +"\n"
+            + " heuristique de "+voisin.get_commune().getNom() +"    du voisin: " +voisin.get_heuristique());
             if (list.get(i).get_heuristique() >= voisin.get_heuristique())
             {
                 //System.out.println("Ajouté à la " + i +"ème place");
-                list.add(i,voisin);
+
                 placer = true;
             }
             i++;
         }
+        list.add(i,voisin);
     }
 
 
@@ -202,7 +206,8 @@ public class Astar {
         {
             System.out.println(commune.get_commune().getNom());
             chemin.add(commune.get_commune());
-            commune=commune.get_pere();
+            System.out.println("commune " + commune.get_commune().getNom() + "pere:" + commune.get_pere().get_commune().getNom());
+            commune = commune.get_pere();
         }
         return chemin;
         //System.out.println(" on a ajouté " + voisinActuel.getNom() + "à _chemin");
@@ -216,6 +221,10 @@ public class Astar {
         {
             list.get(i).affiche();
         }
+    }
+    public static CommPonder trouvePere(ArrayList<CommPonder> list, Commune)
+    {
+
     }
 
     public static X getChemin()

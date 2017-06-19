@@ -23,6 +23,7 @@ public class Main {
         // Filtre les arêtes de distance inférieure à 300
         U = Utils.filterDist(U, 300);
         System.out.println("Graphe construit !\n");
+        //Utils.writeCSV(U);
 
         // Récupère les villes de départ et d'arrivée à partir de leur id entré
         Scanner reader = new Scanner(System.in);
@@ -57,7 +58,7 @@ public class Main {
 
         System.out.println("\nDistance : " + cout);
 
-        Astar astar = new Astar();
+        /*Astar astar = new Astar();
         System.out.println("Ville départ = " + depart.getNom() + " Ville arrivée = " + arrivee.getNom());
         astar.courtChemin(X,U,depart,arrivee);
 
@@ -65,6 +66,6 @@ public class Main {
         for (int i = 0;i < cheminAStar.size(); i++)
         {
             System.out.println(cheminAStar.get(i).getNom());
-        }
+        }*/
     }
 }

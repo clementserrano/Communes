@@ -13,6 +13,11 @@ public class Arete {
         this.distance = Utils.distance(A, B);
     }
 
+    public Arete(Commune A, Commune B, boolean noCalc) {
+        this.A = A;
+        this.B = B;
+    }
+
     public Commune getA() {
         return A;
     }

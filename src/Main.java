@@ -40,7 +40,7 @@ public class Main {
 
         // DIJKSTRA avec SkipList
         // Calcul les plus court chemins entre le départ et tous les sommets du graphe
-        Dijkstra.courtChemin(X, U, depart);
+        Dijkstra.courtCheminSkipList(X, U, depart);
         // Retourne le plus court chemin entre le départ et l'arrivé
         Utils.getCourtChemin(depart, arrivee, Dijkstra.getLambda(), Dijkstra.getPere());
 

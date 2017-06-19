@@ -1,4 +1,5 @@
 import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ConcurrentSkipListSet;
 
 /**
@@ -12,10 +13,9 @@ public class Dijkstra {
     // Tableau des prédecesseurs permettant de reconstruire le plus court chemin
     private static HashMap<Commune, Commune> _pere;
 
-    public static void courtChemin(X X, U U, Commune s) {
+    public static void courtCheminSkipList(X X, U U, Commune s) {
         // Ensemble des sommets non validé
         X Z = new X();
-
         // Tableaux temporaires (on les attribue aux variables statiques à la fin de l'opération)
         HashMap<Commune, Integer> lambda = new HashMap<>();
         HashMap<Commune, Commune> pere = new HashMap<>();
@@ -81,7 +81,66 @@ public class Dijkstra {
             }
         }
 
-        // On attribue les variables temporaires aux variable que le Main récupère
+        // On attribue les variables temporaires aux variables que le Main récupère
+        _lambda = lambda;
+        _pere = pere;
+    }
+
+    public static void courtChemin(X X, U U, Commune s) {
+        // Ensemble des sommets non validé
+        X Z = new X();
+        // Tableaux temporaires (on les attribue aux variables statiques à la fin de l'opération)
+        HashMap<Commune, Integer> lambda = new HashMap<Commune, Integer>();
+        HashMap<Commune, Commune> pere = new HashMap<Commune, Commune>();
+
+        // On ajoute toutes les communes dans Z sauf le départ
+        for (Commune c : X) {
+            if (c != s) Z.add(c);
+        }
+        lambda.put(s, 0);
+
+        // Pour tous les sommets non validés
+        for (Commune i : Z) {
+            // On construit une arête temporaire pour la retrouver dans U
+            Arete usi = new Arete(s, i);
+            if (U.contains(usi)) { // Pour tous les voisins de s
+                lambda.put(i, U.get(usi).getDistance());
+                pere.put(i, s);
+            } else {
+                lambda.put(i, Integer.MAX_VALUE);
+            }
+        }
+
+        // Tant que tous les sommets ne sont pas validés
+        while (!Z.isEmpty()) {
+            // On prend le min dans lambda
+            Commune x = null;
+            int min = Integer.MAX_VALUE;
+            for (Map.Entry<Commune, Integer> e : lambda.entrySet()) {
+                if (e.getValue() < min && Z.contains(e.getKey())) {
+                    x = e.getKey();
+                    min = e.getValue();
+                }
+            }
+            // On valide le sommet
+            Z.remove(x);
+
+            // Pour tous les voisins de x
+            for (Commune i : U.getVoisins(x)) {
+                // S'il n'est pas validé
+                if (Z.contains(i)) {
+                    // On met à jour sa distance si la distance par rapport à x est plus petite
+                    Arete usi = new Arete(x, i);
+                    int dist = lambda.get(x) + U.get(usi).getDistance();
+                    if (dist < lambda.get(i)) {
+                        lambda.put(i, dist);
+                        pere.put(i, x);
+                    }
+                }
+            }
+        }
+
+        // On attribue les variables temporaires aux variables que le Main récupère
         _lambda = lambda;
         _pere = pere;
     }

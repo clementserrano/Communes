@@ -13,7 +13,7 @@ public class CommPonder {
     {
         _commune = commune;
         _heuristique = 0;
-        _cout = 0;
+        _cout = Integer.MAX_VALUE;
         _pere= null;
     }
 

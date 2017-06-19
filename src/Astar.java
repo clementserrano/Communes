@@ -33,11 +33,14 @@ public class Astar {
         }
 
         //on enfile la commune de départ
-        openQueue.add(getCommPonder(x,depart));
+        CommPonder commPonderDepart=getCommPonder(x,depart);
+        commPonderDepart.set_cout(0);
+        commPonderDepart.set_heuristique(commPonderDepart.get_cout() + Utils.distance(commPonderDepart.get_commune(), arrivee));
+        openQueue.add(commPonderDepart);
         //System.out.println("openQueue contient :" + openQueue.get(0).get_commune().getNom());
         while (!openQueue.isEmpty() && !destTrouve)
         {
-            //System.out.println("début du while");
+            System.out.println("début du while");
             CommPonder com = openQueue.get(0);
             if(com.get_commune() == arrivee)
             {
@@ -58,15 +61,20 @@ public class Astar {
 
                     Commune v = voisins.get(i);
                     CommPonder voisin = getCommPonder(x, v);
+
+                    voisin.set_cout(com.get_cout() + Utils.distance(com.get_commune(), voisin.get_commune()));
+                    voisin.set_heuristique(voisin.get_cout() + Utils.distance(com.get_commune(), arrivee));
+                    voisin.set_pere(com);
+
                     if (!contient("closeQueue",closeQueue, voisin.get_commune())) {
 
+
                         //System.out.println("rentre dans le if1");
-                        if (contient("openQueue", openQueue, voisin.get_commune()) && (voisin.get_cout() > openQueue.get(indexOfCommune(openQueue, voisin.get_commune())).get_cout())) {
+                        if (contient("openQueue", openQueue, voisin.get_commune()) && !(voisin.get_cout() > openQueue.get(indexOfCommune(openQueue, voisin.get_commune())).get_cout())) {
 
                             //System.out.println("rentre dans le if2");
-                            voisin.set_cout(com.get_cout() + Utils.distance(com.get_commune(), voisin.get_commune()));
-                            voisin.set_heuristique(voisin.get_cout() + Utils.distance(com.get_commune(), arrivee));
-                            voisin.set_pere(com);
+
+
                             voisin.affiche();
                             openQueue.set(indexOfCommune(openQueue, voisin.get_commune()),voisin);
 
@@ -79,9 +87,8 @@ public class Astar {
                         else
                         {
                             //System.out.println("rentre dans le if2");
-                            voisin.set_cout(com.get_cout() + Utils.distance(com.get_commune(), voisin.get_commune()));
-                            voisin.set_heuristique(voisin.get_cout() + Utils.distance(com.get_commune(), arrivee));
-                            voisin.set_pere(com);
+
+
                             voisin.affiche();
                             //System.out.println("On ajout voisin à openQueue");
                             ajoute(voisin, openQueue);
@@ -94,14 +101,16 @@ public class Astar {
                     //afficheQueue("OpenQueue",openQueue);
                     //afficheQueue("CloseQueue",closeQueue);
                 }
+                System.out.println("fin des voisins");
 
                 closeQueue.add(com);
                 //System.out.println("la vile en haut de open queue est : " + openQueue.get(0).get_commune().getNom());
-                openQueue.remove(openQueue.size()-1);
+                openQueue.remove(indexOfCommune(openQueue,com.get_commune()));
                 //System.out.println("la vile en haut de open queue est : " + openQueue.get(0).get_commune().getNom());
 
             }
             //afficheQueue(openQueue);
+            System.out.println("fin du tant que");
         }
 
 
@@ -111,12 +120,12 @@ public class Astar {
     {
 
         int i = 0;
-        int resultat = 0;
         while (i < list.size())
         {
             if (list.get(i).get_commune().equals(commune))
             {
-                return resultat;
+
+                return i;
             }
             i++;
         }
@@ -131,7 +140,7 @@ public class Astar {
         while (i < list.size() && !placer)
         {
             //System.out.println("i : " + i);
-            if (list.get(i).get_heuristique() <= voisin.get_heuristique())
+            if (list.get(i).get_heuristique() >= voisin.get_heuristique())
             {
                 //System.out.println("Ajouté à la " + i +"ème place");
                 list.add(i,voisin);

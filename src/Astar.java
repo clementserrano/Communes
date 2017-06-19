@@ -16,13 +16,14 @@ public class Astar {
 
      */
 
-    ArrayList<Commune> _chemin;
+    private static X _chemin;
     public static void courtChemin(X X, U U, Commune depart, Commune arrivee) {
         ArrayList<CommPonder> openQueue = new ArrayList<>();
         ArrayList<CommPonder> closeQueue = new ArrayList<>();
 
         ArrayList<CommPonder> x = new ArrayList<>(X.size());
-        Commune c;
+        int compteurIndex;
+        boolean destTrouve = false;
 
         //Initialisation du tableau avec les communes, l'heuristique et le cout
         for (int i = 0;i < x.size(); i++)
@@ -34,45 +35,45 @@ public class Astar {
         //on enfile la commune de départ
         openQueue.add(getCommPonder(x,depart));
 
-        while (!openQueue.isEmpty())
+        while (!openQueue.isEmpty() && !destTrouve)
         {
             CommPonder com = openQueue.get(0);
             if(com.get_commune() == arrivee)
             {
                 //fin du programme je sais pas comment gerer mais refait le chemin
-
+                destTrouve= true;
+                _chemin.add(com.get_commune());
             }
-
-
-            ArrayList<Commune> voisins = U.getVoisins(com.get_commune());
-            for (int i =0; i < voisins.size(); i++)
+            else
             {
-                Commune v = voisins.get(i);
-                CommPonder voisin = getCommPonder(x,v);
-                CommPonder voisinOpenQueue = openQueue.get(openQueue.indexOf(voisin));
-                if (( !contient(openQueue,voisin.get_commune())  && !( voisin.get_cout() < voisinOpenQueue.get_cout()) )
-                        || (( contient(openQueue,voisin.get_commune()) /*&& avec un cout inférieur*/ )))
-                {
+                ArrayList<Commune> voisins = U.getVoisins(com.get_commune());
+                for (int i = 0; i < voisins.size(); i++) {
+                    Commune v = voisins.get(i);
+                    CommPonder voisin = getCommPonder(x, v);
+                    CommPonder voisinOpenQueue = openQueue.get(openQueue.indexOf(voisin));
+                    CommPonder voisinCloseQueue = closeQueue.get(closeQueue.indexOf(voisin));
+                    if ((!contient(closeQueue, voisin.get_commune()))
+                            ||
+                            (!contient(openQueue, voisin.get_commune()) && (voisin.get_cout() > voisinOpenQueue.get_cout()))
+                            ) {
 
-                    voisin.set_cout(com.get_cout() + 1);
-                    voisin.set_heuristique( voisin.get_cout() + Utils.distance(com.get_commune(), arrivee));
+                        voisin.set_cout(com.get_cout() + Utils.distance(com.get_commune(), voisin.get_commune()));
+                        voisin.set_heuristique(voisin.get_cout() + Utils.distance(com.get_commune(), arrivee));
 
-                    openQueue.add(voisin);
+                        openQueue.add(voisin);
+                        changeChemin(com.get_commune(),voisin.get_commune());
+                    }
+
                 }
 
+                closeQueue.add(com);
+                openQueue.remove(0);
             }
 
-            closeQueue.add(com);
         }
-        //terminer le programme (avec erreur)
+        //terminer le programme
 
 
-    }
-
-    public static double  heuristique(Commune a, Commune b,U U)
-    {
-        Arete arete = new Arete(a,b);
-        return U.get(arete).getDistance()/100;
     }
 
 
@@ -107,4 +108,28 @@ public class Astar {
 
     }
 
+    public static void changeChemin(Commune communeActuelle, Commune voisinActuel)
+    {
+        boolean comActTrouve = false;
+        for (int i = 0; i < _chemin.size(); i++)
+        {
+            if (comActTrouve)
+            {
+                _chemin.remove(i);
+            }
+            if (communeActuelle == _chemin.get(i))
+            {
+                comActTrouve = true;
+                _chemin.remove(i);
+                _chemin.add(i,voisinActuel);
+            }
+
+        }
+
+    }
+
+    public static X getChemin()
+    {
+        return _chemin;
+    }
 }

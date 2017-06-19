@@ -109,7 +109,7 @@ public class Utils {
             iterator = pere.get(iterator);
         }
         chemin.add(iterator);
-        cout += U.get(new Arete(iteratorPrec, iterator)).getDistance();
+        cout += U.get(new Arete(iteratorPrec, iterator,false)).getDistance();
         Collections.reverse(chemin);
 
         _chemin = chemin;

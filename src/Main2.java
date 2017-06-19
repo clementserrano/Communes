@@ -1,8 +1,10 @@
 import java.io.IOException;
 import java.util.Scanner;
 
-public class Main {  // ASTAR
-
+/**
+ * Created by clementserrano on 19/06/2017.
+ */
+public class Main2 {  // DIJKSTRA
     public static void main(String[] args) {
         // Récupère les communes à partir du fichier CSV
         X X = null;
@@ -39,16 +41,23 @@ public class Main {  // ASTAR
             arrivee = X.get(reader.next());
         } while (arrivee == null);
 
-        // ASTAR
-        Astar astar = new Astar();
-        System.out.println("Ville départ = " + depart.getNom() + " Ville arrivée = " + arrivee.getNom());
-        astar.courtChemin(X,U,depart,arrivee);
+        // DIJKSTRA avec SkipList
+        // Calcul les plus court chemins entre le départ et tous les sommets du graphe
+        Dijkstra.courtCheminSkipList(X, U, depart);
+        // Retourne le plus court chemin entre le départ et l'arrivé
+        Utils.getCourtChemin(U, depart, arrivee, Dijkstra.getLambda(), Dijkstra.getPere());
 
-        X cheminAStar = astar.getChemin();
-        for (int i = 0;i < cheminAStar.size(); i++)
-        {
-            System.out.println(cheminAStar.get(i).getNom());
+        X chemin = Utils.getChemin();
+        int cout = Utils.getCout();
+
+        // Affichage du plus court chemin
+        for (int i = 0; i < chemin.size(); i++) {
+            System.out.print(chemin.get(i).getNom());
+            if (i < chemin.size() - 1) {
+                System.out.print(" -> ");
+            }
         }
 
+        System.out.println("\nDistance : " + cout + " km");
     }
 }

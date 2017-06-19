@@ -97,16 +97,19 @@ public class Utils {
     }
 
     // Détermine le plus court chemin d'une commune A à une commune B à partir des résultats de l'algo de Dijkstra
-    public static void getCourtChemin(Commune depart, Commune arrivee, HashMap<Commune, Integer> lambda, HashMap<Commune, Commune> pere) {
+    public static void getCourtChemin(U U, Commune depart, Commune arrivee, HashMap<Commune, Integer> lambda, HashMap<Commune, Commune> pere) {
         X chemin = new X();
         int cout = 0;
         Commune iterator = arrivee;
+        Commune iteratorPrec = null;
         while (iterator != depart) {
             chemin.add(iterator);
-            cout += lambda.get(iterator);
+            if (iteratorPrec != null) cout += U.get(new Arete(iteratorPrec, iterator)).getDistance();
+            iteratorPrec = iterator;
             iterator = pere.get(iterator);
         }
         chemin.add(iterator);
+        cout += U.get(new Arete(iteratorPrec, iterator)).getDistance();
         Collections.reverse(chemin);
 
         _chemin = chemin;

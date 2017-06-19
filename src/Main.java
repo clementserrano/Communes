@@ -12,7 +12,7 @@ public class Main {
             e.printStackTrace();
         }
 
-        // Filtre les communes de population < à 50 000
+        // Filtre les communes de population supérieure à 50 000
         X = Utils.filterPop(X, 50000);
         // Filtre les DOMTOM
         X = Utils.filterDOMTOM(X);
@@ -20,7 +20,7 @@ public class Main {
 
         // Construit le graphe complet
         U U = Utils.buildGraphe(X);
-        // Filtre les arêtes < à 300
+        // Filtre les arêtes de distance inférieure à 300
         U = Utils.filterDist(U, 300);
         System.out.println("Graphe construit !\n");
 
@@ -42,7 +42,7 @@ public class Main {
         // Calcul les plus court chemins entre le départ et tous les sommets du graphe
         Dijkstra.courtCheminSkipList(X, U, depart);
         // Retourne le plus court chemin entre le départ et l'arrivé
-        Utils.getCourtChemin(depart, arrivee, Dijkstra.getLambda(), Dijkstra.getPere());
+        Utils.getCourtChemin(U, depart, arrivee, Dijkstra.getLambda(), Dijkstra.getPere());
 
         X chemin = Utils.getChemin();
         int cout = Utils.getCout();

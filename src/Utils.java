@@ -1,20 +1,18 @@
 import java.io.*;
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Map;
-
-import static java.lang.Math.*;
 
 /**
  * Created by clementserrano on 19/05/2017.
  */
 public class Utils {
 
+    // Contient une liste de sommets ordonnés sur le plus court chemin
     private static X _chemin;
+    // Cout du plus court chemin
     private static int _cout;
 
+    // Calcul la distance entre 2 communes avec leur coordonnées GPS
     public static int distance(Commune communeA, Commune communeB) {
         double a = Math.PI / 180;
         double lat1 = communeA.getLatitude() * a;
@@ -32,6 +30,7 @@ public class Utils {
         return (int) ((rad_dist * 3437.74677 * 1.1508) * 1.6093470878864446);
     }
 
+    // Lit le fichier CSV et retourne une liste des communes
     public static X readCSV(String filename) throws IOException {
         X X = new X();
         String line;
@@ -47,6 +46,7 @@ public class Utils {
         return X;
     }
 
+    // Construit le graphe complet à partir des sommets fournis
     public static U buildGraphe(X X) {
         U U = new U();
         for (int i = 0; i < X.size(); i++) {
@@ -62,6 +62,7 @@ public class Utils {
         return U;
     }
 
+    // Filtre la population en fonction du paramètre fourni
     public static X filterPop(X X, int population) {
         X tmp = new X();
         for (Commune c : X) {
@@ -72,17 +73,19 @@ public class Utils {
         return tmp;
     }
 
+    // Filtre les DOMTOM garantissant la presque connexité du graphe
     public static X filterDOMTOM(X X) {
         X tmp = new X();
         Commune paris = X.get("paris");
         for (Commune c : X) {
-            if (distance(paris,c) < 1200) { // On ne prend pas les DOMTOM
+            if (distance(paris, c) < 1200) { // On ne prend pas les DOMTOM
                 tmp.add(c);
             }
         }
         return tmp;
     }
 
+    // Filtre les distance supérieur à la distance fournie
     public static U filterDist(U U, int distance) {
         U tmp = new U();
         for (Arete u : U) {
@@ -93,6 +96,7 @@ public class Utils {
         return tmp;
     }
 
+    // Détermine le plus court chemin d'une commune A à une commune B à partir des résultats de l'algo de Dijkstra
     public static void getCourtChemin(Commune depart, Commune arrivee, HashMap<Commune, Integer> lambda, HashMap<Commune, Commune> pere) {
         X chemin = new X();
         int cout = 0;

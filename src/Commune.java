@@ -8,6 +8,8 @@ public class Commune {
     private double latitude;
     private int population;
 
+    private int distance; // pour la skiplist dijkstra
+
     public Commune(String id, String nom, int population, double longitude, double latitude) {
         this.id = id;
         this.nom = nom;
@@ -34,5 +36,13 @@ public class Commune {
 
     public double getLatitude() {
         return latitude;
+    }
+
+    public int getDistance() {
+        return distance;
+    }
+
+    public void setDistance(int distance) {
+        this.distance = distance;
     }
 }

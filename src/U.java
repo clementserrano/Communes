@@ -23,6 +23,7 @@ public class U extends ArrayList<Arete> {
         return null;
     }
 
+    // Retourne tous les voisins de x
     public ArrayList<Commune> getVoisins(Commune x) {
         ArrayList<Commune> voisins = new ArrayList<>();
         for (Arete u : this) {

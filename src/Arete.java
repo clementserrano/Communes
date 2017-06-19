@@ -25,6 +25,7 @@ public class Arete {
         return distance;
     }
 
+    // Permet de confondre les extrêmités d'un arête, permettant de dire que l'arête A - B est égal à l'arête B - A
     @Override
     public boolean equals(Object obj) {
         Arete u = (Arete) obj;

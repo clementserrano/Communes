@@ -22,7 +22,6 @@ public class Astar {
         ArrayList<CommPonder> closeQueue = new ArrayList<>();
 
         ArrayList<CommPonder> x = new ArrayList<>(X.size());
-        int compteurIndex;
         boolean destTrouve = false;
 
         //Initialisation du tableau avec les communes, l'heuristique et le cout
@@ -51,7 +50,6 @@ public class Astar {
                     Commune v = voisins.get(i);
                     CommPonder voisin = getCommPonder(x, v);
                     CommPonder voisinOpenQueue = openQueue.get(openQueue.indexOf(voisin));
-                    CommPonder voisinCloseQueue = closeQueue.get(closeQueue.indexOf(voisin));
                     if ((!contient(closeQueue, voisin.get_commune()))
                             ||
                             (!contient(openQueue, voisin.get_commune()) && (voisin.get_cout() > voisinOpenQueue.get_cout()))
@@ -60,7 +58,7 @@ public class Astar {
                         voisin.set_cout(com.get_cout() + Utils.distance(com.get_commune(), voisin.get_commune()));
                         voisin.set_heuristique(voisin.get_cout() + Utils.distance(com.get_commune(), arrivee));
 
-                        openQueue.add(voisin);
+                        ajoute(voisin,openQueue);
                         changeChemin(com.get_commune(),voisin.get_commune());
                     }
 
@@ -71,9 +69,22 @@ public class Astar {
             }
 
         }
-        //terminer le programme
 
 
+    }
+
+    private static void ajoute(CommPonder voisin, ArrayList<CommPonder> list) {
+        int i = 0;
+        boolean placer = false;
+        while (i < list.size() && !placer)
+        {
+            if (list.get(i).get_heuristique() < voisin.get_heuristique())
+            {
+                list.add(i,voisin);
+                placer = true;
+            }
+            i++;
+        }
     }
 
 
@@ -120,13 +131,16 @@ public class Astar {
             if (communeActuelle == _chemin.get(i))
             {
                 comActTrouve = true;
-                _chemin.remove(i);
-                _chemin.add(i,voisinActuel);
+                _chemin.remove(i+1);
+                _chemin.add(i+1,voisinActuel);
             }
 
         }
 
     }
+
+
+
 
     public static X getChemin()
     {
